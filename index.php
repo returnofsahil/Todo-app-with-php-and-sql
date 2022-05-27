@@ -103,6 +103,12 @@ require_once('connection.php');
     <!-- php -->
     <div class="container">
       <?php 
+      $sql="SELECT * FROM `notes`";
+      $result = mysqli_query($conn,$sql);
+      
+      while($row = mysqli_fetch_assoc($result)){
+        echo ($row['sno'] . 'title' . $row['title']);
+      }
       ?>
     </div>
     <script
