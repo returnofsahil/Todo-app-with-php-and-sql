@@ -47,6 +47,58 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     </script>
   </head>
   <body>
+    <!-- modal -->
+       <!-- edit mdal -->
+<!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">
+  Launch demo modal
+</button> -->
+
+<!-- Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Edit this Note</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <form method='POST' action='index.php'>
+        <div class="mb-3">
+          <label for="title" class="form-label">Title</label>
+          <input
+            type="text"
+            class="form-control"
+            name="titleEdit"
+            id="titleEdit"
+            aria-describedby="emailHelp"
+          />
+        </div>
+        
+        </div>
+        <div class="form-floating">
+          <textarea 
+          class="form-control " 
+          name="descEdit"
+          placeholder="Leave a comment here" id="descEdit" 
+           >
+          </textarea>
+          <label for="desc">Description</label>
+        </div>
+        <div class="container d-flex justify-content-center">
+          
+          <button type="submit" class="btn btn-primary my-3 mx-3 ">Submit</button>
+        </div>
+        
+      </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+    <!-- modal end -->
     <!--Bootstrap  -->
     <nav class="navbar navbar-dark navbar-expand-lg bg-dark">
       <div class="container-fluid">
@@ -121,6 +173,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     <!-- alert -->
     <!-- form -->
     <div class="container my-4">
+      <h2>Add Note</h2>
       <form method='POST' action='index.php'>
         <div class="mb-3">
           <label for="title" class="form-label">Title</label>
@@ -174,8 +227,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             <th scope="row">'. $sno .'</th>
             <td>'. $row["title"] .'</td>
             <td>' .$row["description"] .'</td>
-            <td>Actions</td>
+            <td><button class="btn btn-sm btn-primary edit">Edit</button> <a href="./delete">Delete</a></td>
           </tr>');
+          
+
       }
       ?>
         
@@ -188,5 +243,21 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
       integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
       crossorigin="anonymous"
     ></script>
+    <script>
+      edits = document.getElementsByClassName('edit');
+      
+      Array.from(edits).forEach((element)=>{
+        element.addEventListener("click",(e)=>{
+           tr =e.target.parentNode.parentNode;
+           title = tr.getElementsByTagName('td')[0].innerText;
+           desc = tr.getElementsByTagName('td')[1].innerText;
+           titleEdit.value = title;
+           descEdit.value = desc;
+           $('#editModal').modal('toggle');
+          
+        })
+      })
+     
+    </script>
   </body>
 </html>
