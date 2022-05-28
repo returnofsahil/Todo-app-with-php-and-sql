@@ -1,6 +1,25 @@
 <?php
 //connect to the database
+// INSERT INTO `notes` (`sno`, `title`, `description`, `timestamp`) VALUES (NULL, 'grocerry list', 'apple\r\nbanana', current_timestamp());
+$insert = false;
 require_once('connection.php');
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
+  $title = $_POST['title'];
+  $description = $_POST['desc'];
+  
+  //posting to database
+  $sql = "INSERT INTO `notes` (`title`, `description`) VALUES ('$title', '$description')";
+  $result = mysqli_query($conn,$sql);
+  if($result){
+    $insert = true;
+  }
+ else{
+   $insert = false;
+ }
+  
+
+  
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -60,6 +79,7 @@ require_once('connection.php');
               </ul>
             </li>
           </ul>
+          
           <form class="d-flex" role="search">
             <input
               class="form-control me-2"
@@ -74,9 +94,22 @@ require_once('connection.php');
         </div>
       </div>
     </nav>
+    <!-- alert -->
+    <?php
+              
+              if($insert){
+                echo"<div class='alert alert-success alert-dismissible fade show' role='alert'>
+                <strong>Success</strong> Your note has been added
+                <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+              </div>";
+              
+              }
+              
+          ?>
+    <!-- alert -->
     <!-- form -->
     <div class="container my-4">
-      <form>
+      <form method='POST' action='index.php'>
         <div class="mb-3">
           <label for="title" class="form-label">Title</label>
           <input
@@ -90,7 +123,12 @@ require_once('connection.php');
         
         </div>
         <div class="form-floating">
-          <textarea class="form-control " name="desc" placeholder="Leave a comment here" id="desc" ></textarea>
+          <textarea 
+          class="form-control " 
+          name="desc"
+          placeholder="Leave a comment here" id="desc" 
+           >
+          </textarea>
           <label for="desc">Description</label>
         </div>
         <div class="container d-flex justify-content-center">
@@ -102,14 +140,35 @@ require_once('connection.php');
     </div>
     <!-- php -->
     <div class="container">
-      <?php 
+      
+      <!-- table -->
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">S.No</th>
+            <th scope="col">Title</th>
+            <th scope="col">Descrption</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        <?php 
       $sql="SELECT * FROM `notes`";
       $result = mysqli_query($conn,$sql);
       
       while($row = mysqli_fetch_assoc($result)){
-        echo ($row['sno'] . 'title' . $row['title']);
+         echo('<tr>
+            <th scope="row">'. $row["sno"] .'</th>
+            <td>'. $row["title"] .'</td>
+            <td>' .$row["description"] .'</td>
+            <td>Actions</td>
+          </tr>');
       }
       ?>
+        
+          
+        </tbody>
+      </table>
     </div>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
