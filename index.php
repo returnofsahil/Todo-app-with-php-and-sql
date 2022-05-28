@@ -33,6 +33,18 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
       integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
       crossorigin="anonymous"
     />
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <!-- jquery -->
+    <!-- data table jquery plug in -->
+    <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+    <script src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+
+    <script>
+      $(document).ready( function () {
+    $('#myTable').DataTable();
+} );
+    </script>
   </head>
   <body>
     <!--Bootstrap  -->
@@ -139,10 +151,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
       </form>
     </div>
     <!-- php -->
-    <div class="container">
+    <div class="container my-4">
       
       <!-- table -->
-      <table class="table">
+      <table class="table"id="myTable">
         <thead>
           <tr>
             <th scope="col">S.No</th>
@@ -155,10 +167,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         <?php 
       $sql="SELECT * FROM `notes`";
       $result = mysqli_query($conn,$sql);
-      
+      $sno=0;
       while($row = mysqli_fetch_assoc($result)){
-         echo('<tr>
-            <th scope="row">'. $row["sno"] .'</th>
+        $sno +=1; 
+        echo('<tr>
+            <th scope="row">'. $sno .'</th>
             <td>'. $row["title"] .'</td>
             <td>' .$row["description"] .'</td>
             <td>Actions</td>
