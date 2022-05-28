@@ -1,21 +1,44 @@
 <?php
-//connect to the database
-// INSERT INTO `notes` (`sno`, `title`, `description`, `timestamp`) VALUES (NULL, 'grocerry list', 'apple\r\nbanana', current_timestamp());
+
 $insert = false;
+$delete = false;
+$update =false;
 require_once('connection.php');
+if(isset($_GET['delete'])){
+  $sno = $_GET['delete'];
+  
+  $sql = "DELETE FROM `notes` WHERE `notes`.`sno` = $sno";
+  $result= mysqli_query($conn,$sql);
+  $delete = true;
+}
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
-  $title = $_POST['title'];
-  $description = $_POST['desc'];
+  if(isset($_POST['snoEdit'])){
+    // update record
+    // echo 'yes';
+    $title = $_POST['titleEdit'];
+    $description = $_POST['descEdit'];
+    $sno = $_POST['snoEdit'];
+    $update =true;
+    //updating db
+    $sql ="UPDATE `notes` SET `title` = '$title' ,`description` = '$description'  WHERE `sno` = '$sno'";
+    $result = mysqli_query($conn,$sql);
+  }
+  else{
+    $title = $_POST['title'];
+    $description = $_POST['desc'];
   
   //posting to database
-  $sql = "INSERT INTO `notes` (`title`, `description`) VALUES ('$title', '$description')";
-  $result = mysqli_query($conn,$sql);
-  if($result){
-    $insert = true;
+    $sql = "INSERT INTO `notes` (`title`, `description`) VALUES ('$title', '$description')";
+    $result = mysqli_query($conn,$sql);
+    if($result){
+      $insert = true;
+    }
+   else{
+     $insert = false;
+   }
   }
- else{
-   $insert = false;
- }
+  
+  
   
 
   
@@ -72,6 +95,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             id="titleEdit"
             aria-describedby="emailHelp"
           />
+          <input type="hidden"name="snoEdit"id ="snoEdit">
         </div>
         
         </div>
@@ -86,15 +110,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         </div>
         <div class="container d-flex justify-content-center">
           
-          <button type="submit" class="btn btn-primary my-3 mx-3 ">Submit</button>
+          <button type="submit" class="btn btn-primary my-3 mx-3 ">Update Note</button>
         </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         
+      </div>
       </form>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+      
     </div>
   </div>
 </div>
@@ -170,6 +194,27 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
               }
               
           ?>
+          <?php
+              
+              if($delete){
+                echo"<div class='alert alert-info alert-dismissible fade show' role='alert'>
+                <strong>Success</strong> Your note has been deleted
+                <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+              </div>";
+              
+              }
+              
+          ?><?php
+              
+          if($update){
+            echo"<div class='alert alert-success alert-dismissible fade show' role='alert'>
+            <strong>Success</strong> Your note has been updated
+            <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+          </div>";
+          
+          }
+          
+      ?>
     <!-- alert -->
     <!-- form -->
     <div class="container my-4">
@@ -227,7 +272,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             <th scope="row">'. $sno .'</th>
             <td>'. $row["title"] .'</td>
             <td>' .$row["description"] .'</td>
-            <td><button class="btn btn-sm btn-primary edit">Edit</button> <a href="./delete">Delete</a></td>
+            <td>
+            <button class="btn btn-sm btn-primary edit" id =' .$row["sno"] .'>Edit</button> 
+            <button class="btn btn-sm btn-danger delete" id=d' .$row["sno"] .'>Delete</button>
+            </td>
           </tr>');
           
 
@@ -253,7 +301,26 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
            desc = tr.getElementsByTagName('td')[1].innerText;
            titleEdit.value = title;
            descEdit.value = desc;
+           snoEdit.value=e.target.id;
+           console.log(e.target.id);
            $('#editModal').modal('toggle');
+          
+        })
+      })
+      
+      // delete
+      deletes = document.getElementsByClassName('delete');
+      
+      Array.from(deletes).forEach((element)=>{
+        element.addEventListener("click",(e)=>{
+           
+           sno=e.target.id.substr(1,);
+
+           if(confirm("Press a button")){
+             
+             window.location = `/projects/todoPhp/index.php?delete=${sno}`;
+           }
+           
           
         })
       })
